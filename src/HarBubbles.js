@@ -1,70 +1,85 @@
 import React, { Component } from 'react'
+import map from 'lodash/map';
+import partial from 'lodash/partial';
 import * as d3 from 'd3';
 import './HarBubbles.css';
 import harData from './data';
 
 export default class HarBubbles extends Component {
 
+    constructor(props) {
+        super(props);
+        this.state = { height: null, width: null };
+        this.updateDimensions.bind(this);
+        this.renderBubbles.bind(this);
+        this.renderBubble.bind(this);
+    }
+
     componentDidMount() {
-        this.renderBubbles();
-        window.addEventListener('resize', this.renderBubbles.bind(this));
+        this.updateDimensions();
+        window.addEventListener('resize', this.updateDimensions);
     }
 
     componentWillUnmount() {
-        window.removeEventListener('resize', this.renderBubbles.bind(this));
+        window.removeEventListener('resize', this.updateDimensions);
+    }
+
+    updateDimensions() {
+        const {
+            clientHeight,
+            clientWidth
+        } = this.container;
+        this.setState({height: clientHeight, width: clientWidth});
+    }
+
+    renderBubble(color, bubble) {
+        if(bubble.data.size) {
+            return null;
+        }
+
+        return (
+            <g {...{transform: `translate(${bubble.x},${bubble.y})`, className: 'har-bubbles__entry'}}>
+                <title>{bubble.data.fileName} - ${bubble.data.mimeType} - ${bubble.data.size}</title>
+                <circle {...{r: bubble.r, style: {fill: color(bubble.data.size)}}} />
+                {
+                    (bubble.r > 30) && (
+                        <text {...{dy: '.1em', style: {textAnchor: 'middle', fontSize: '10px'}}}>
+                            {bubble.data.fileName.substring(0, bubble.r / 3)}
+                        </text>
+                    )
+                }
+            </g>
+        )
     }
 
     renderBubbles() {
-        const { clientHeight, clientWidth } = this.container;
+        const { width, height } = this.state;
+        if(!(width && height)) {
+            return null;
+        }
+
+        const color = d3.scaleOrdinal(d3.schemeCategory20c);
 
         const data = d3.hierarchy({children: harData()})
             .sum(d => d.size)
             .sort((current, previous) => current.size);
-        const color = d3.scaleOrdinal(d3.schemeCategory20c);
 
-        d3.selectAll('svg').remove();
-
-        const svg = d3.select(this.container).append('svg')
-            .attr("width", clientWidth)
-            .attr("height", clientHeight)
-            .attr("class", "har-bubbles__svg");
-
-        const bubble = d3.pack()
-            .size([clientWidth, clientHeight])
+        const bubbles = d3.pack()
+            .size([width, height])
             .padding(1)(data).descendants();
 
-        console.log(bubble);
+        console.log(bubbles);
 
-        const node = svg.selectAll('.node')
-            .data(bubble)
-            .enter()
-            .filter(d => d.data.size > 0)
-            .append('g')
-            .attr('class', 'har-bubbles__entry')
-            .attr('transform', n => `translate(${n.x},${n.y})`);
-
-        node.append('title')
-            .text(e => `${e.data.fileName} - ${e.data.mimeType} - ${e.data.size.toFixed(2)}KB`);
-
-        node.append('circle')
-            .attr('r', d => d.r)
-            .style('fill', (d) => d.data.size ? color(d.data.size) : 'transparent')
-            .style('opacity', 0.7);
-
-        node.filter(d => d.r > 30)
-            .append('text')
-            .attr('dy', '.1em')
-            .style('text-anchor', 'middle')
-            .style('font-size', d => d.r > 50 ? '13px' : '10px')
-            .text(e => e.data.fileName.substring(0, e.r / 3));
-
-
+        return null;
     }
 
     render() {
+        const {height, width} = this.state;
         return (
             <div className="har-bubbles">
-                <div className="har-bubbles__container" ref={c => {this.container = c}}></div>
+                <div className="har-bubbles__container" ref={c => {this.container = c}}>
+                    { !!(height && width) && this.renderBubbles()}
+                </div>
             </div>
         )
     }
