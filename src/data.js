@@ -3,11 +3,12 @@ import get from 'lodash/get';
 import split from 'lodash/split';
 import last from 'lodash/last';
 import first from 'lodash/first';
+import compact from 'lodash/compact';
 
 import * as fixture from './www.nordstromrack.com.json';
 
 export default function parseHarFileData(data = fixture) {
-    return map(
+    return compact(map(
         get(data, 'log.entries', []),
         entry => {
             const { time } = entry;
@@ -17,6 +18,9 @@ export default function parseHarFileData(data = fixture) {
             const mimeType = get(entry, 'response.content.mimeType');
             const size = get(entry, 'response.content.size', 0)/1024;
             const timings = get(entry, 'timings');
+            if(!size || size < 1) {
+                return;
+            }
             return {
                 time,
                 url,
@@ -26,5 +30,5 @@ export default function parseHarFileData(data = fixture) {
                 fileName: fileName.length ? fileName : '/'
             };
         }
-    );
+    ));
 }

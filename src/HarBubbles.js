@@ -32,19 +32,19 @@ export default class HarBubbles extends Component {
         this.setState({height: clientHeight, width: clientWidth});
     }
 
-    renderBubble(color, bubble) {
-        if(bubble.data.size) {
+    renderBubble(color, {data,x ,y, r }, key) {
+        if(!data.size || data.size < 1) {
             return null;
         }
 
         return (
-            <g {...{transform: `translate(${bubble.x},${bubble.y})`, className: 'har-bubbles__entry'}}>
-                <title>{bubble.data.fileName} - ${bubble.data.mimeType} - ${bubble.data.size}</title>
-                <circle {...{r: bubble.r, style: {fill: color(bubble.data.size)}}} />
+            <g {...{key, transform: `translate(${x},${y})`, className: 'har-bubbles__entry'}}>
+                <title>{data.fileName} - {data.mimeType} - {data.size}</title>
+                <circle {...{r, style: {fill: color(r)}}} />
                 {
-                    (bubble.r > 30) && (
+                    (r > 30) && (
                         <text {...{dy: '.1em', style: {textAnchor: 'middle', fontSize: '10px'}}}>
-                            {bubble.data.fileName.substring(0, bubble.r / 3)}
+                            {data.fileName.substring(0, r / 3)}
                         </text>
                     )
                 }
@@ -68,17 +68,18 @@ export default class HarBubbles extends Component {
             .size([width, height])
             .padding(1)(data).descendants();
 
-        console.log(bubbles);
-
-        return null;
+        return (
+            <svg {...{width, height}}>
+                {map(bubbles, partial(this.renderBubble, color))}
+            </svg>
+        );
     }
 
     render() {
-        const {height, width} = this.state;
         return (
             <div className="har-bubbles">
                 <div className="har-bubbles__container" ref={c => {this.container = c}}>
-                    { !!(height && width) && this.renderBubbles()}
+                    { this.renderBubbles()}
                 </div>
             </div>
         )
