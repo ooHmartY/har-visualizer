@@ -3,3 +3,27 @@
     height: 100%;
     background-color: #000;
 }
+
+.har-bubbles__actions {
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.har-bubbles__reset {
+    background-color: transparent;
+    border: 0;
+    padding: 15px;
+    color: white;
+    font-size: 18px;
+}
+
+.har-bubbles__reset:before {
+    content: '';
+    display: inline-block;
+    border-top: 2px solid white;
+    border-left: 2px solid white;
+    padding: 5px;
+    transform: rotate(-45deg);
+}

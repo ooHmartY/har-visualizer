@@ -1,0 +1,24 @@
+.file-loader {
+    color: white;
+    height: 100%;
+}
+
+.file-loader__content {
+    padding-top: 20%;
+}
+
+.file-loader__actions {
+    margin-top: 15px;
+}
+
+.file-loader__upload-button {
+    padding: 20px;
+    border: 1px solid midnightblue;
+    background-color: royalblue;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.file-loader__upload-input {
+    display: none;
+}

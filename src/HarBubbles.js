@@ -1,9 +1,13 @@
 import React, { Component } from 'react'
+import ReactTransitionGroup from 'react-addons-transition-group';
 import map from 'lodash/map';
+import compact from 'lodash/compact';
+import debounce from 'lodash/debounce';
 import partial from 'lodash/partial';
 import * as d3 from 'd3';
 import './HarBubbles.css';
 import harData from './data';
+import Bubble from './Bubble';
 
 export default class HarBubbles extends Component {
 
@@ -17,11 +21,11 @@ export default class HarBubbles extends Component {
 
     componentDidMount() {
         this.updateDimensions();
-        window.addEventListener('resize', this.updateDimensions);
+        window.addEventListener('resize', debounce(this.updateDimensions.bind(this), 300));
     }
 
     componentWillUnmount() {
-        window.removeEventListener('resize', this.updateDimensions);
+        window.removeEventListener('resize', debounce(this.updateDimensions.bind(this), 300));
     }
 
     updateDimensions() {
@@ -38,17 +42,12 @@ export default class HarBubbles extends Component {
         }
 
         return (
-            <g {...{key, transform: `translate(${x},${y})`, className: 'har-bubbles__entry'}}>
+            <Bubble {...{ key, x, y, r, style: {fill: color(r)}, className: 'har-bubbles__entry' }}>
                 <title>{data.fileName} - {data.mimeType} - {data.size}</title>
-                <circle {...{r, style: {fill: color(r)}}} />
-                {
-                    (r > 30) && (
-                        <text {...{dy: '.1em', style: {textAnchor: 'middle', fontSize: '10px'}}}>
-                            {data.fileName.substring(0, r / 3)}
-                        </text>
-                    )
-                }
-            </g>
+                <text {...{dy: '.1em', style: {textAnchor: 'middle', fontSize: '10px'}}}>
+                    {data.fileName.substring(0, r / 3)}
+                </text>
+            </Bubble>
         )
     }
 
@@ -60,17 +59,19 @@ export default class HarBubbles extends Component {
 
         const color = d3.scaleOrdinal(d3.schemeCategory20c);
 
-        const data = d3.hierarchy({children: harData()})
+        const data = d3.hierarchy({children: harData(this.props.data)})
             .sum(d => d.size)
             .sort((current, previous) => current.size);
 
         const bubbles = d3.pack()
             .size([width, height])
-            .padding(1)(data).descendants();
+            .padding(1.5)(data).descendants();
 
         return (
-            <svg {...{width, height}}>
-                {map(bubbles, partial(this.renderBubble, color))}
+            <svg width={width} height={height}>
+                <ReactTransitionGroup component="g" width={width} height={height}>
+                    {compact(map(bubbles, partial(this.renderBubble, color)))}
+                </ReactTransitionGroup>
             </svg>
         );
     }
@@ -78,6 +79,9 @@ export default class HarBubbles extends Component {
     render() {
         return (
             <div className="har-bubbles">
+                <div className="har-bubbles__actions">
+                    <button type="button" className="har-bubbles__reset" onClick={this.props.onResetData}>Back</button>
+                </div>
                 <div className="har-bubbles__container" ref={c => {this.container = c}}>
                     { this.renderBubbles()}
                 </div>

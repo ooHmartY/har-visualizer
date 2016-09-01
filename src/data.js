@@ -5,9 +5,7 @@ import last from 'lodash/last';
 import first from 'lodash/first';
 import compact from 'lodash/compact';
 
-import * as fixture from './www.nordstromrack.com.json';
-
-export default function parseHarFileData(data = fixture) {
+export default function parseHarFileData(data) {
     return compact(map(
         get(data, 'log.entries', []),
         entry => {
