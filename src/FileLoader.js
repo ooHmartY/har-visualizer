@@ -29,8 +29,8 @@ export default class FileLoader extends Component {
                     e.preventDefault();
                     this.onFileAdded.call(this, e);
                 }}
-                onDragOver={e => e.preventDefault() && console.log('over')}
-                onDragEnter={e => e.preventDefault() && console.log('enter')}
+                onDragOver={e => e.preventDefault()}
+                onDragEnter={e => e.preventDefault()}
             >
                 <div className="file-loader__content">
                     <div className="file-loader__copy">

@@ -1,0 +1,29 @@
+exports[`FileLoader renders initial state correctly 1`] = `
+<div
+  className="file-loader"
+  onDragEnter={[Function onDragEnter]}
+  onDragOver={[Function onDragOver]}
+  onDrop={[Function onDrop]}>
+  <div
+    className="file-loader__content">
+    <div
+      className="file-loader__copy">
+      Drag and Drop a File or Click Below to Upload
+    </div>
+    <div
+      className="file-loader__actions">
+      <label
+        className="file-loader__upload-button">
+        <span
+          className="file-loader__upload-label">
+          Add File +
+        </span>
+        <input
+          className="file-loader__upload-input"
+          onChange={[Function bound onFileAdded]}
+          type="file" />
+      </label>
+    </div>
+  </div>
+</div>
+`;
