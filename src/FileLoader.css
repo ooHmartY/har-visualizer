@@ -5,6 +5,16 @@
 
 .file-loader__content {
     padding-top: 20%;
+    height: 100%;
+    border: 5px solid transparent;
+    border-radius: 15px;
+    transition: transform 600ms ease-in-out;
+}
+
+.file-loader--over .file-loader__content {
+    border-color: white;
+    transform: scale(0.9);
+    opacity: 0.8;
 }
 
 .file-loader__actions {

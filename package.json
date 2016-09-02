@@ -50,6 +50,7 @@
     "whatwg-fetch": "1.0.0"
   },
   "dependencies": {
+    "classnames": "^2.2.5",
     "d3": "^4.2.2",
     "d3-transition": "^1.0.1",
     "lodash": "^4.15.0",

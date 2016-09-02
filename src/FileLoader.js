@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import classNames from 'classnames';
 import './FileLoader.css';
 import fileReader from './utils/FileReader';
 
@@ -10,6 +11,9 @@ export default class FileLoader extends Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            isDragOver: false
+        };
         this.onFileAdded.bind(this);
     }
 
@@ -22,15 +26,31 @@ export default class FileLoader extends Component {
     }
 
     render() {
+        const { isDragOver } = this.state;
+        const className = classNames(
+            'file-loader',
+            {
+                'file-loader--over': isDragOver
+            }
+        );
+
         return (
             <div
-                className="file-loader"
+                className={className}
                 onDrop={e => {
                     e.preventDefault();
                     this.onFileAdded.call(this, e);
                 }}
                 onDragOver={e => e.preventDefault()}
-                onDragEnter={e => e.preventDefault()}
+                onDragEnter={e => {
+                    e.preventDefault();
+                    this.setState({
+                        isDragOver: true
+                    });
+                }}
+                onDragLeave={() => this.setState({
+                    isDragOver: false
+                })}
             >
                 <div className="file-loader__content">
                     <div className="file-loader__copy">

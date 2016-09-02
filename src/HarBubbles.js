@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
 import ReactTransitionGroup from 'react-addons-transition-group';
 import map from 'lodash/map';
 import compact from 'lodash/compact';
@@ -6,7 +6,7 @@ import debounce from 'lodash/debounce';
 import partial from 'lodash/partial';
 import * as d3 from 'd3';
 import './HarBubbles.css';
-import harData from './data';
+import harData from './utils/data';
 import Bubble from './Bubble';
 
 export default class HarBubbles extends Component {
@@ -80,7 +80,9 @@ export default class HarBubbles extends Component {
         return (
             <div className="har-bubbles">
                 <div className="har-bubbles__actions">
-                    <button type="button" className="har-bubbles__reset" onClick={this.props.onResetData}>Back</button>
+                    <button type="button"
+                            className="har-bubbles__reset"
+                            onClick={this.props.onResetData}>Back</button>
                 </div>
                 <div className="har-bubbles__container" ref={c => {this.container = c}}>
                     { this.renderBubbles()}
@@ -89,3 +91,8 @@ export default class HarBubbles extends Component {
         )
     }
 }
+
+HarBubbles.propTypes = {
+    data: PropTypes.array.isRequired,
+    onResetData: PropTypes.func.isRequired
+};
