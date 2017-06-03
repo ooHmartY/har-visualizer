@@ -23,7 +23,6 @@ class App extends Component {
 
     render() {
         const { data } = this.state;
-        console.log(data);
         return (
           <div className="App">
             {data ?

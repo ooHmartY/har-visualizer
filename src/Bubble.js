@@ -57,7 +57,7 @@ class Bubble extends Component {
             .transition(this.props.transition)
             .attr('transform', `translate(${x},${y}),scale(1)`)
             .on('end', () => {
-                // this.setState({r: this.props.r });
+                this.setState({ r: this.props.r });
                 callback();
             });
     }

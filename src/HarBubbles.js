@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PT from 'prop-types';
 import autoBind from 'react-autobind';
-import ReactTransitionGroup from 'react-transition-group';
+import TransitionGroup from 'react-transition-group/TransitionGroup';
 import map from 'lodash/map';
 import compact from 'lodash/compact';
 import debounce from 'lodash/debounce';
@@ -14,7 +14,9 @@ import Bubble from './Bubble';
 export default class HarBubbles extends Component {
 
     static propTypes = {
-        data: PT.arrayOf(PT.object).isRequired,
+        data: PT.shape({
+            log: PT.object.isRequired,
+        }).isRequired,
         onResetData: PT.func.isRequired,
     };
 
@@ -26,17 +28,6 @@ export default class HarBubbles extends Component {
 
     componentDidMount() {
         this.updateDimensions();
-        window.addEventListener(
-            'resize',
-            debounce(this.updateDimensions.bind(this), 300),
-        );
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener(
-            'resize',
-            debounce(this.updateDimensions.bind(this), 300),
-        );
     }
 
     updateDimensions() {
@@ -47,7 +38,7 @@ export default class HarBubbles extends Component {
         this.setState({ height: clientHeight, width: clientWidth });
     }
 
-    renderBubble(color, { data, x, y, r }, key) {
+    renderBubble(color, { data, x, y, r }, key) { // eslint-disable-line
         if (!data.size || data.size < 1) {
             return null;
         }
@@ -91,9 +82,9 @@ export default class HarBubbles extends Component {
 
         return (
           <svg width={width} height={height}>
-            <ReactTransitionGroup component="g" width={width} height={height}>
+            <TransitionGroup component="g" width={width} height={height}>
               {compact(map(bubbles, partial(this.renderBubble, color)))}
-            </ReactTransitionGroup>
+            </TransitionGroup>
           </svg>
         );
     }
