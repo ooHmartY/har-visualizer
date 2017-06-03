@@ -5,7 +5,7 @@ export default function fileReader(file) {
         reader.addEventListener('error', reject);
         reader.addEventListener('abort', reject);
 
-        reader.addEventListener('loadend', e => {
+        reader.addEventListener('loadend', (e) => {
             resolve(e.target.result);
         });
 

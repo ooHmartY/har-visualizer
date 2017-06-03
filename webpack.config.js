@@ -3,24 +3,27 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 module.exports = {
     entry: {
-        lib: [
-            'react-hot-loader/patch',
-            'webpack-dev-server/client?http://localhost:8080',
-            'webpack/hot/only-dev-server',
+        main: [
+            'babel-polyfill',
             'react',
+            'd3',
+            './src/index.js',
         ],
-        main: './src/index.js',
     },
     output: {
         filename: '[name]-[hash].js',
         path: path.resolve(__dirname, 'build'),
     },
     plugins: [
+        new webpack.NamedModulesPlugin(),
         new webpack.DefinePlugin({
             'process.env': {
-                NODE_ENV: JSON.stringify('development'),
+                NODE_ENV: JSON.stringify(
+                    isProduction ? 'production' : 'development'),
             },
         }),
         new HtmlWebpackPlugin({
@@ -28,22 +31,8 @@ module.exports = {
             filename: 'index.html',
             inject: 'body',
         }),
-        new webpack.HotModuleReplacementPlugin(),
-        new webpack.NamedModulesPlugin(),
         new webpack.optimize.OccurrenceOrderPlugin(),
-        new webpack.optimize.CommonsChunkPlugin({
-            name: 'lib',
-        }),
     ],
-    devtool: 'cheap-eval-source-map',
-    devServer: {
-        contentBase: path.resolve(__dirname, 'build'),
-        compress: false,
-        lazy: true,
-        filename: '[name]-[chunkhash].js',
-        hot: true,
-        publicPath: '/',
-    },
     module: {
         rules: [
             {
