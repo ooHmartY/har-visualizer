@@ -8,16 +8,16 @@ import compact from 'lodash/compact';
 export default function parseHarFileData(data) {
     return compact(map(
         get(data, 'log.entries', []),
-        entry => {
+        (entry) => {
             const { time } = entry;
             const url = get(entry, 'request.url');
             const end = last(split(url, '/'));
             const fileName = first(split(end, '?'));
             const mimeType = get(entry, 'response.content.mimeType');
-            const size = get(entry, 'response.content.size', 0)/1024;
+            const size = get(entry, 'response.content.size', 0) / 1024;
             const timings = get(entry, 'timings');
-            if(!size || size < 1) {
-                return;
+            if (!size || size < 1) {
+                return null;
             }
             return {
                 time,
@@ -25,8 +25,8 @@ export default function parseHarFileData(data) {
                 mimeType,
                 size,
                 timings,
-                fileName: fileName.length ? fileName : '/'
+                fileName: fileName.length ? fileName : '/',
             };
-        }
+        },
     ));
 }

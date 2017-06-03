@@ -1,7 +1,24 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react';
+import PT from 'prop-types';
 import * as d3 from 'd3';
 
 class Bubble extends Component {
+
+    static propTypes = {
+        children: PT.node.isRequired,
+        className: PT.string.isRequired,
+        r: PT.number.isRequired,
+        style: PT.shape({
+            fill: PT.string.isRequired,
+        }).isRequired,
+        transition: PT.instanceOf(d3.transition).isRequired,
+        x: PT.number.isRequired,
+        y: PT.number.isRequired,
+    };
+
+    static defaultProps = {
+        transition: d3.transition().duration(1000).ease(d3.easeElasticInOut),
+    };
 
     constructor(props) {
         super(props);
@@ -10,6 +27,20 @@ class Bubble extends Component {
         };
         this._showBubble.bind(this);
         this._hideBubble.bind(this);
+    }
+
+    componentWillReceiveProps(prev, next) {
+        if (prev.r === next.r) {
+            return;
+        }
+
+        d3.select(this.bubble)
+            .select('circle')
+            .transition(this.props.transition)
+            .attr('r', next.r)
+            .on('end', () => {
+                this.setState({ r: next.r });
+            });
     }
 
     componentWillEnter(callback) {
@@ -26,8 +57,7 @@ class Bubble extends Component {
             .transition(this.props.transition)
             .attr('transform', `translate(${x},${y}),scale(1)`)
             .on('end', () => {
-
-                //this.setState({r: this.props.r });
+                this.setState({ r: this.props.r });
                 callback();
             });
     }
@@ -46,53 +76,28 @@ class Bubble extends Component {
             });
     }
 
-    componentWillReceiveProps(prev, next) {
-        console.log('received props');
-        if(prev.r === next.r) {
-            return;
-        }
-
-        d3.select(this.bubble)
-            .select('circle')
-            .transition(this.props.transition)
-            .attr('r', next.r)
-            .on('end', () => {
-                this.setState({r: next.r});
-            });
-    }
-
     render() {
         const {
-            x,
-            y,
+            children,
+            className,
             r,
             style,
-            children
+            x,
+            y,
         } = this.props;
         return (
-            <g {...{
-                ref: c => { this.bubble = c },
+          <g
+            {...{
+                ref: (c) => { this.bubble = c; },
                 transform: `translate(${x},${y}),scale(0)`,
-                className: 'har-bubbles__entry'
-            }}>
-                <circle {...{ r, style }} />
-                { children }
-            </g>
-        )
+                className: 'har-bubbles__entry',
+            }}
+          >
+            <circle {...{ r, style, className }} />
+            { children }
+          </g>
+        );
     }
 }
-
-Bubble.propTypes = {
-    transition: PropTypes.instanceOf(d3.transition).isRequired,
-    r: PropTypes.number.isRequired,
-    x: PropTypes.number.isRequired,
-    y: PropTypes.number.isRequired,
-    className: PropTypes.string,
-    children: PropTypes.node
-};
-
-Bubble.defaultProps = {
-    transition: d3.transition().duration(1000).ease(d3.easeElasticInOut)
-};
 
 export default Bubble;

@@ -1,3 +1,12 @@
 {
-  "presets": ["es2015", "es2016", "react"]
+  "presets": [
+    ["es2015", { "modules": false }],
+    "react"
+  ],
+  "plugins": [
+    "transform-runtime",
+    "transform-class-properties",
+    "transform-flow-strip-types",
+    "react-hot-loader/babel"
+  ]
 }

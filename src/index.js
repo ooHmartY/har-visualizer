@@ -1,9 +1,25 @@
+import { AppContainer } from 'react-hot-loader';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { render } from 'react-dom';
+
 import App from './App';
 import './index.css';
 
-ReactDOM.render(
-  <App />,
-  document.getElementById('root')
-);
+(() => {
+    function mountApp(Component) {
+        render(
+            (<AppContainer>
+              <Component />
+            </AppContainer>),
+            document.getElementById('root'),
+        );
+    }
+
+    mountApp(App);
+
+    if (module.hot) {
+        module.hot.accept('./App', () => {
+            mountApp(App);
+        });
+    }
+})();
