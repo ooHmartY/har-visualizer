@@ -13,7 +13,7 @@
   ],
   "rules": {
     "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
-    "indent": [2, 4, {"SwitchCase": 1}],
+    "indent": ["error", 4, { "SwitchCase": 1 }],
     "max-len": ["error", 80],
     "no-underscore-dangle": 0,
     "no-use-before-define": ["error", {"functions": false}],

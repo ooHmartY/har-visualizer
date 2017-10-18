@@ -22,8 +22,7 @@ module.exports = {
         new webpack.NamedModulesPlugin(),
         new webpack.DefinePlugin({
             'process.env': {
-                NODE_ENV: JSON.stringify(
-                    isProduction ? 'production' : 'development'),
+                NODE_ENV: JSON.stringify(isProduction ? 'production' : 'development'),
             },
         }),
         new HtmlWebpackPlugin({
